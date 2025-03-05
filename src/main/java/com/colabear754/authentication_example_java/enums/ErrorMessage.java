@@ -1,0 +1,87 @@
+package com.colabear754.authentication_example_java.enums;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public enum ErrorMessage {
+
+    MEMBER_NOT_FOUND("해당 회원을 찾을 수 없습니다."),
+    PASSWORD_NOT_MATCH("비밀번호가 일치하지 않습니다."),
+    PERMISSION_NOT_FOUND("접근 권한이 존재하지 않습니다."),
+    API_NOT_FOUND("해당 API를 찾을 수 없습니다."),
+    METHOD_NOT_ALLOWED("해당 메소드를 사용할 수 없습니다."),
+    MISSING_PARAMETER("필수 파라미터가 누락되었습니다. -> "),
+    BODY_DATA_NOT_FOUND("JSON,XML 형식의 데이터가 유효하지 않습니다. -> "),
+    INVALID_DATA_ACCESS_API_ERROR("데이터를 액세스 하는 과정에서 오류가 발생했습니다. 보통 @Transactional 오류입니다. -> "),
+    MYSQL_DATA_TRUNCATION("데이터가 너무 큽니다. -> "),
+    METHOD_ARGUMENT_TYPE_MISMATCH("파라미터 타입이 일치하지 않습니다."),
+    URI_SYNTAX_ERROR("잘못된 URI 형식을 포함하는 문자열이 존재합니다."),
+    ILLEGAL_ARGUMENT_ERROR("잘못된 인수가 전달되었습니다. -> "),
+    INCORRECT_DATA("잘못된 데이터입니다. -> "),
+    SQL_DUPLICATE_ENTRY("중복된 데이터가 존재합니다."),
+    SQL_INTEGRITY_CONSTRAINT_VIOLATION("필수값인 데이터가 존재하지 않습니다."),
+    EXCEL_IMPORT_ERROR("엑셀 파일을 읽는 중 오류가 발생했습니다."),
+    FILE_NOT_FOUND("파일이 존재하지 않습니다."),
+    MEDIA_TYPE_NOT_SUPPORTED("지원하지 않는 미디어 타입입니다."),
+    FILE_NOT_FORMAT("엑셀 파일이 아닙니다."),
+    STORE_MANAGER_TEAM_DATA_NOT_FOUND("담당(4) 데이터가 존재하지 않습니다."),
+    STORE_BELONG_DATA_NOT_FOUND("소속 데이터가 존재하지 않습니다."),
+    STORE_CHANNEL_DATA_NOT_FOUND("채널 데이터가 존재하지 않습니다."),
+    REQUIRED_DATA_NOT_FOUND("필수 데이터가 존재하지 않습니다."),
+    EXCEL_FILE_READ_ERROR("엑셀 파일을 읽는데 실패했습니다."),
+    DATA_FORMAT_ERROR("데이터 형식이 잘못되었습니다."),
+    PRODUCT_MARKETING_DATA_NOT_FOUND("마케팅팀 데이터가 존재하지 않습니다."),
+    PRODUCT_CATEGORY_DATA_NOT_FOUND("제품군 카테고리 데이터가 존재하지 않습니다."),
+    PRODUCT_DIVISION_CODE_DATA_NOT_FOUND("제품군 코드 데이터가 존재하지 않습니다."),
+    PROPERTY_REFERENCE_ERROR("존재하지 않는 속성을 참조하고 있습니다. -> "),
+    S3FILE_NOT_FOUND("S3 파일이 존재하지 않습니다.\n파일이름 : "),
+    ADMINISTRATOR_ID_ALREADY("아이디가 이미 존재합니다."),
+    EXISTS_MENU("이미 존재하는 메뉴명입니다."),
+    EXISTS_EN_MENU("이미 존재하는 영문 메뉴명입니다."),
+    DATA_NOT_FOUND("데이터가 존재하지 않습니다."),
+    NOT_FOUND_PRODUCT_TARGET("대상 제품 데이터가 존재하지 않습니다."),
+    STORE_NEGOTIATION_NOT_FOUND("유통,채널 데이터가 존재하지 않습니다."),
+    FIND_FAIL_COUNT_OVER("로그인 실패 횟수가 5회 초과입니다."),
+    SLEEP_ACCOUNT_ERROR("장기 미접속 계정입니다."),
+    DELETED_ACCOUNT_ERROR("삭제된 계정입니다."),
+    IS_ACCOUNT_DISABLED("비활성화된 계정입니다."),
+    IP_RANGE_ERROR("IP 범위가 올바르지 않습니다."),
+    IP_NOT_ALLOWED("허용된 IP가 아닙니다."),
+    INVALID_PASSWORD("비밀번호는 영문, 숫자, 특수문자를 포함해 8자리 이상이어야 합니다."),
+    NOTICE_NOT_FOUND("공지사항 데이터가 존재하지 않습니다."),
+    EMAIL_NOT_FOUND("이메일이 존재하지 않습니다."),
+    EMAIL_SEND_ERROR("이메일 전송에 실패했습니다."),
+    NO_SUCH_FIELD_NAME("해당 필드명이 존재하지 않습니다."),
+    POP_STOCK_NOT_ENOUGH("POP 재고가 부족합니다."),
+    DATA_SIZE_NOT_MATCH("데이터 사이즈가 일치하지 않습니다."),
+    EXCEL_DATA_CELL_NOT_FOUND("엑셀의 필수 값이 존재하지 않습니다.\n"),
+    ID_NOT_FOUND("ID가 존재하지 않습니다."),
+    REASON_NOT_FOUND("사유가 존재하지 않습니다."),
+    PASSWORD_NOT_FOUND("비밀번호가 존재하지 않습니다."),
+    NO_SUCH_FILE_ERROR("특정 필드를 찾을 수 없습니다."),
+    INVOCATION_TARGET_ERROR("메소드 호출에 실패했습니다."),
+    NO_SUCH_METHOD_ERROR("특정 메소드를 찾을 수 없습니다."),
+    GENERAL_SECURITY_ERROR("보안 오류가 발생했습니다."),
+    JSON_PROCESSING_ERROR("JSON 처리 중 오류가 발생했습니다."),
+    STORE_DATA_NOT_FOUND("매장 정보를 찾을 수 없습니다."),
+    CONTACT_DEADLINE_ERROR("답변 마감일이 지났습니다."),
+    POP_SAVE_CART_DUPLICATE("장바구니에 이미 존재하는 POP입니다."),
+    IMAGE_TYPE_NOT_SUPPORTED("지원하지 않는 이미지 타입입니다."),
+    INCORRECT_FOLDER_NAME("잘못된 폴더 이름입니다."),
+    REQUIRED_GUIDE_ID("가이드 고유 인덱스가 필요합니다."),
+    STORE_CHECK_DATA_NOT_FOUND("매장 점검결과 정보를 찾을 수 없습니다."),
+    SELF_DELETION_NOT_ALLOWED("자신의 계정을 삭제할 수 없습니다."),
+    SELF_ACTIVATION_CHANGE_NOT_ALLOWED("자신의 계정 활성화 상태를 변경할 수 없습니다."),
+    NINETY_DAY_OVER("비밀번호를 변경한 지 90일이 지났습니다."),
+    CHECKLIST_ONLY_XLSX("체크리스트는 엑셀파일만 업로드 가능합니다."),
+    IMAGE_ONLY_ZIP("이미지는 ZIP파일만 업로드 가능합니다."),
+    INNER_FOLDER_NAME_ONLY_NUMBER("내부 폴더 이름은 숫자로만 구성되어야 합니다.\nfileName : "),
+    ENCRYPTION_EXCEL_OR_NOT_EXCEL_FILE_ERROR("암호화 된 파일이거나 엑셀 파일 형식이 아닙니다.\nfileName : ")
+
+    ;
+
+    private final String message;
+
+}

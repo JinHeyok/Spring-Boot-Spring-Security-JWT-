@@ -1,13 +1,16 @@
 package com.colabear754.authentication_example_java.Util;
 
 import com.colabear754.authentication_example_java.entity.ExcelSheetData;
+import com.colabear754.authentication_example_java.enums.ErrorMessage;
 import com.colabear754.authentication_example_java.handler.BadRequestException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.crypt.EncryptionMode;
@@ -89,13 +92,15 @@ public class ExcelUtil {
                     excelList.add(map);
                 }
             }
-
+        } catch (OLE2NotOfficeXmlFileException | EncryptedDocumentException e) {
+            e.printStackTrace();
+            throw new BadRequestException(ErrorMessage.ENCRYPTION_EXCEL_OR_NOT_EXCEL_FILE_ERROR.getMessage() +  file.getOriginalFilename());
         } catch (InvalidFormatException e) {
             e.printStackTrace();
-            throw new InvalidFormatException("ExcelUtil.getFirstExcelData");
+            throw new InvalidFormatException(ErrorMessage.EXCEL_IMPORT_ERROR.getMessage() + "-> 잘못된 데이터 형식입니다.");
         } catch (IOException e) {
             e.printStackTrace();
-            throw new IOException("ExcelUtil.getFirstExcelData");
+            throw new IOException(ErrorMessage.EXCEL_IMPORT_ERROR.getMessage() + "-> 잘못된 파일입니다.");
         }
         return excelList;
     }
