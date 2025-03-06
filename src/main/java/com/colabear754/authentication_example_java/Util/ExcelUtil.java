@@ -10,6 +10,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
@@ -52,11 +53,11 @@ public class ExcelUtil {
      * @return {List} response
      * @throws InvalidFormatException
      * @throws IOException            Excel 파일을 처리하는 과정에서 에러가 발생했습니다. -> {파일위치.함수위치}
-     * @author 방진혁
+     * @author NINEFIVE
      */
-    public static List<Map<String, Object>> getListExcelData(MultipartFile file,
-                                                             int sheetNumber,
-                                                             int startIndex) throws InvalidFormatException, IOException {
+    public List<Map<String, Object>> getListExcelData(MultipartFile file,
+                                                      int sheetNumber,
+                                                      int startIndex) throws InvalidFormatException, IOException {
 
         List<Map<String, Object>> excelList = new ArrayList<>();
 
@@ -65,39 +66,83 @@ public class ExcelUtil {
 
             @SuppressWarnings("resource") // MEMO 자원(resource) 누수 경고를 억제 XSSWorkbook 객체가 자동으로 닫히지 않아 발생 할 수 있는 경고를 억제하는데 사용한다.
             XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
-
-            // NOTE 첫번째 시트
-            XSSFSheet sheet = workbook.getSheetAt(sheetNumber);
-
-            int rowIndex = 0;
-            int columnIndex = 0;
-
-            // NOTE 첫번째 행(0)은 컬럼 명이기 때문에 두번째 행(1) 부터 검색
-            for (rowIndex = 1; rowIndex < sheet.getLastRowNum() + 1; rowIndex++) {
-                XSSFRow row = sheet.getRow(rowIndex);
-
-                // NOTE 빈 행은 Skip
-                if (row != null && row.getCell(startIndex) != null && !row.getCell(startIndex).toString().isBlank()) {
-
-                    Map<String, Object> map = new HashMap<>();
-
-                    int cells = row.getLastCellNum();
-
-                    for (columnIndex = 0; columnIndex < cells; columnIndex++) {
-                        XSSFCell cell = row.getCell(columnIndex);
-                        map.put(String.valueOf(columnIndex), getCellValue(cell));
-                        // NOTE log.info(rowIndex + " 행 : " + columnIndex + " 열 = " + getCellValue(cell));
-                    }
-
-                    excelList.add(map);
-                }
-            }
-        } catch (OLE2NotOfficeXmlFileException | EncryptedDocumentException e) {
+            excelFileRead(excelList, workbook, sheetNumber, startIndex); // MEMO 엑셀 파일을 읽어서 데이터를 가져온다.
+        } catch (NotOfficeXmlFileException | EncryptedDocumentException e) {
             e.printStackTrace();
-            throw new BadRequestException(ErrorMessage.ENCRYPTION_EXCEL_OR_NOT_EXCEL_FILE_ERROR.getMessage() +  file.getOriginalFilename());
+            throw new BadRequestException(ErrorMessage.ENCRYPTION_EXCEL_OR_NOT_EXCEL_FILE_ERROR.getMessage() + file.getOriginalFilename());
         } catch (InvalidFormatException e) {
             e.printStackTrace();
             throw new InvalidFormatException(ErrorMessage.EXCEL_IMPORT_ERROR.getMessage() + "-> 잘못된 데이터 형식입니다.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IOException(ErrorMessage.EXCEL_IMPORT_ERROR.getMessage() + "-> 잘못된 파일입니다.");
+        }
+        return excelList;
+    }
+
+    /**
+     * 엑셀 데이터를 읽는다.
+     *
+     * @param excelList   데이터를 담을 리스트
+     * @param workbook    엑셀 워크북
+     * @param sheetNumber 시트 번호
+     * @param startIndex  데이터가 있는 열의 시작 인덱스
+     * @author NINEFIVE
+     */
+    public void excelFileRead(List<Map<String, Object>> excelList, XSSFWorkbook workbook, int sheetNumber, int startIndex) {
+        // NOTE 첫번째 시트
+        XSSFSheet sheet = workbook.getSheetAt(sheetNumber);
+
+        int rowIndex = 0;
+        int columnIndex = 0;
+
+        // NOTE 첫번째 행(0)은 컬럼 명이기 때문에 두번째 행(1) 부터 검색
+        for (rowIndex = 1; rowIndex < sheet.getLastRowNum() + 1; rowIndex++) {
+            XSSFRow row = sheet.getRow(rowIndex);
+
+            // NOTE 빈 행은 Skip
+            //      startIndex로 어디 행 부터 데이터를 검사하여 시작할 지 정의한다.
+            if (row != null && row.getCell(startIndex) != null && !row.getCell(startIndex).toString().isBlank()) {
+
+                Map<String, Object> map = new HashMap<>();
+
+                int cells = row.getLastCellNum();
+
+                for (columnIndex = 0; columnIndex < cells; columnIndex++) {
+                    XSSFCell cell = row.getCell(columnIndex);
+                    map.put(String.valueOf(columnIndex), getCellValue(cell));
+                    // NOTE og.info(rowIndex + " 행 : " + columnIndex + " 열 = " + getCellValue(cell));
+                }
+                excelList.add(map);
+            }
+        }
+    }
+
+    /**
+     * 암호화된 엑셀 파일을 읽는다.
+     *
+     * @param file     엑셀 파일
+     * @param password 암호화된 엑셀 파일의 비밀번호
+     * @return
+     * @throws IOException 파일 처리 중 오류가 발생했습니다.
+     * @author NIINEFIVE
+     */
+    public List<Map<String, Object>> getListLockExcelData(MultipartFile file,
+                                                          String password,
+                                                          int sheetNumber,
+                                                          int startIndex) throws IOException {
+        List<Map<String, Object>> excelList = new ArrayList<>();
+        try {
+            InputStream inputStream = file.getInputStream();
+            // NOTE : 암호화된 엑셀 파일을 비밀번호로 읽기
+            Workbook workbook = WorkbookFactory.create(inputStream, password);
+            // NOTE : XSSFWorkbook으로 작업하기 위해 다운캐스팅
+            XSSFWorkbook xssfWorkbook = (XSSFWorkbook) workbook;
+            excelFileRead(excelList, xssfWorkbook, sheetNumber, startIndex);
+        } catch (EncryptedDocumentException e) {
+            // NOTE : 비밀번호가 틀린 경우에 대한 커스텀 예외 처리
+            e.printStackTrace();
+            throw new BadRequestException(ErrorMessage.ENCRYPTION_EXCEL_ERROR.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOException(ErrorMessage.EXCEL_IMPORT_ERROR.getMessage() + "-> 잘못된 파일입니다.");

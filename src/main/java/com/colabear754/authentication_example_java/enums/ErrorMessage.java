@@ -78,7 +78,8 @@ public enum ErrorMessage {
     CHECKLIST_ONLY_XLSX("체크리스트는 엑셀파일만 업로드 가능합니다."),
     IMAGE_ONLY_ZIP("이미지는 ZIP파일만 업로드 가능합니다."),
     INNER_FOLDER_NAME_ONLY_NUMBER("내부 폴더 이름은 숫자로만 구성되어야 합니다.\nfileName : "),
-    ENCRYPTION_EXCEL_OR_NOT_EXCEL_FILE_ERROR("암호화 된 파일이거나 엑셀 파일 형식이 아닙니다.\nfileName : ")
+    ENCRYPTION_EXCEL_OR_NOT_EXCEL_FILE_ERROR("암호화 된 파일이거나 엑셀 파일 형식이 아닙니다.\nfileName : "),
+    ENCRYPTION_EXCEL_ERROR("암호화 된 엑셀 파일 비밀번호가 일치하지 않습니다."),
 
     ;
 
